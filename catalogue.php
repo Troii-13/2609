@@ -1,3 +1,10 @@
+<?php
+require 'C:\xampp\htdocs\proj-final\admin\db_connect.php'; // Include the database connection
+
+// Fetch products from the database
+$sql = "SELECT * FROM products WHERE status = 'active'";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -118,6 +125,9 @@
             background-color: #ffe6f3;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            text-align: center;
         }
 
         .product-image {
@@ -134,7 +144,6 @@
 
         .product-info {
             padding: 1rem;
-            text-align: center;
         }
 
         .product-info h4 {
@@ -177,13 +186,14 @@
 </head>
 <body>
     <header class="navbar">
-        <div class="navbar-logo"><img src="logo.png"  style="width:150px; height:50px;"></div>
+        <div class="navbar-logo">
+            <img src="logo.png" style="width:150px; height:50px;">
+        </div>
         <nav class="navbar-links">
             <a href="indexcatwip.html">HOME</a>
             <a href="aboutus.html">ABOUT US</a>
-            <a href="catalogue.html">CATALOGUE</a>
-            <a href="contactus.html">CONTACT US</a>
-            <a href="login.html">LOG-OUT</a>
+            <a href="catalogue.php">CATALOGUE</a>
+            
         </nav>
     </header>
 
@@ -210,54 +220,27 @@
 
         <div class="scrollable-product-container">
             <div class="product-grid">
-                <div class="product-card">
-                    <div class="product-image">Image</div>
-                    <div class="product-info">
-                        <h4>Product Name</h4>
-                        <p>$00.00</p>
-                        <p> 15 items in stock</p>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">Image</div>
-                    <div class="product-info">
-                        <h4>Product Name</h4>
-                        <p>$00.00</p>
-                        <p> 12 items in stock</p>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">Image</div>
-                    <div class="product-info">
-                        <h4>Product Name</h4>
-                        <p>$00.00</p>
-                        <p> 18 items in stock</p>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">Image</div>
-                    <div class="product-info">
-                        <h4>Product Name</h4>
-                        <p>$00.00</p>
-                        <p> 9 items in stock</p>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">Image</div>
-                    <div class="product-info">
-                        <h4>Product Name</h4>
-                        <p>$00.00</p>
-                        <p> 6 items in stock</p>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">Image</div>
-                    <div class="product-info">
-                        <h4>Product Name</h4>
-                        <p>$00.00</p>
-                        <p> 18 items in stock</p>
-                    </div>
-                </div>
+                <?php if ($result->num_rows > 0): ?>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <div class="product-card">
+                        <div class="product-image">
+    <?php if (!empty($row['image_url'])): ?>
+        <img src="http://localhost/proj-final/admin/<?php echo htmlspecialchars($row['image_url']); ?>" alt="Product Image" style="width:100%; height:100%; border-radius:10px 10px 0 0;">
+
+    <?php else: ?>
+        No Image
+    <?php endif; ?>
+</div>
+                            <div class="product-info">
+                                <h4><?php echo htmlspecialchars($row['name']); ?></h4>
+                                <p>$<?php echo htmlspecialchars($row['price']); ?></p>
+                                <p><?php echo htmlspecialchars($row['stock']); ?> items in stock</p>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <p>No products available at the moment.</p>
+                <?php endif; ?>
             </div>
         </div>
 
